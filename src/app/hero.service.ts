@@ -6,9 +6,15 @@ import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, map, tap } from 'rxjs/operators';
 
+
+const httpOptions = {
+  headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+};
+
 @Injectable({
   providedIn: 'root'
 })
+
 export class HeroService {
 
   constructor(
@@ -34,6 +40,13 @@ export class HeroService {
       );
   }
 
+  /** PUT: update the hero on the server */
+  updateHero (hero: Hero): Observable<any> {
+    return this.http.put(this.heroesUrl, hero, httpOptions).pipe(
+      tap(_ => this.log(`updated hero id=${hero.id}`)),
+      catchError(this.handleError<any>('updateHero'))
+    );
+  }
 
   /** Log a HeroService message with the MessageService */
   private log(message: string) {
